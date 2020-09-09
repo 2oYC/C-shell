@@ -14,7 +14,7 @@ void execute( char **argv){
     else if(strcmp(argv[0],"pinfo")==0)
         pinfo(argv);
     else{
-        return sys(argv);
+        sys(argv);
     }
 
     return ;
