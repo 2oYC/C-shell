@@ -1,10 +1,13 @@
 #include "shell.h"
 
 int main(){
-    int status=1;
+    status=1;
+    strcpy(prev,"~");
     char **diffcomm,**incomm;
     getcwd(homedir,1023);
     back_cnt=0;
+    bg_order_len = 0;
+    signal(SIGCHLD, exit_handler);
     while(status){
         prompt();
         char *input=_read();
@@ -15,17 +18,8 @@ int main(){
         int i=0;
          //printf("bondu");
         while(diffcomm[i]!=NULL){
-            incomm= tokenize(diffcomm[i]," \t\r\n\a");
-            if(incomm[0]!=NULL){
-                   int  j=1;
-                while(incomm[j]==NULL)
-                    j++;
-                    j--;
-               // printf("bondu");
-                execute(incomm);
-                //printf("bondu");
-                i++;
-            }
+            execute_with_pipes(diffcomm[i],-1);
+            i++;
         }
 
     }

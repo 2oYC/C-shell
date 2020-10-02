@@ -1,4 +1,6 @@
 #include "shell.h"
+#define blue    "\x1b[34m"
+#define res     "\x1b[0m"
 
 void prompt(){
     char hostname[1300],pcwd[1300];
@@ -36,19 +38,20 @@ void prompt(){
   if(flag){
     strcpy(pcwd,cwd);
   } else {
-    char newCWD[len+3];
+    char newCWD[len-i+3];
     newCWD[0]='~';
     j=1;
     while(i<len){
       newCWD[j] = cwd[i];
       i++; j++;
     }
+    newCWD[j]='\0';
     strcpy(pcwd, newCWD);
   }
     }
 
 
-    printf("<%s@%s:%s>",getlogin(),hostname,pcwd);
+    printf(blue "<%s@%s:%s>" res,getlogin(),hostname,pcwd);
 
 
 }

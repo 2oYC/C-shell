@@ -1,47 +1,63 @@
 #include "shell.h"
 
-void sys(char **argv){
-    int i=0,bg_check=0;
-    while(argv[i]!=NULL)
-        i++;
-    i--;
-    int len=strlen(argv[i]);
-    if(argv[i][len-1]=='&'){
-        bg_check=1;
-        //printf("%c dulla\n",argv[i][len-1]);
-        argv[i]=NULL;
-       // printf("%c\n",argv[i][len-1]);
+int sys(char **argv, int argc, int input_fd, int output_fd) {
+    if (argc == 0) 
+        return 0;
+      
+    else if (strcmp (argv[0], "quit") == 0 || strcmp (argv[0], "exit") == 0)
+        exit (EXIT_SUCCESS);
+
+    pid_t pid, wpid;
+    int status;
+
+    int background = 0;
+    if (argv[argc-1][0] == '&') {
+        background = 1;
+        free (argv[argc]);
+        argv[--argc] = NULL;
     }
-  //  printf("%s %s\n",argv[0], argv[1]);
+    flag=0;
+     execute_inblt (argv, argc);
 
-  int pid, wpid;
-  int status;
-  
 
-  pid = fork();
-  if (pid < 0) {
-    perror("error in forking");
-  }
-  else if (!pid) {
-      setpgrp();
-    if (execvp(argv[0], argv) == -1) {
-      perror("execvp failure");
+    pid = fork();
+    if (pid < 0) {
+        perror("Forking error");
     }
-    exit(1);
-  } 
+    else if (pid == 0) {
+       
+        if (input_fd >= 0) {
+            dup2(input_fd, STDIN_FILENO);
+            close(input_fd);
+        }
+        if (output_fd >= 0) {
+            dup2(output_fd, STDOUT_FILENO);
+            close(output_fd);
+        }
+         setpgrp();
+       if(!flag){
+        if (execvp(argv[0], argv) == -1) {
+            perror(argv[0]);
+        }
+       }
+        exit(EXIT_FAILURE);
+    } 
+    else{
+        // Parent process
+        if (input_fd >= 0) close (input_fd);
+        if (output_fd >= 0) close (output_fd);
+        if(background){
+            bg_order[bg_order_len] = pid;
+            bg_processes[bg_order_len] = malloc (1300);
+            strcpy (bg_processes[bg_order_len], argv[0]);
+            bg_order_len++;
+        }
+         else { // Not a background process
+            do {
+                wpid = waitpid(pid, &status, WUNTRACED);
+            } while (!(WIFEXITED(status) || WIFSIGNALED(status)));
+        }
+    } 
 
-  if (bg_check) {
-    
-     printf("process with pid %d started\n",  pid);
-     back_procs[back_cnt].proc_id= pid;
-     back_procs[back_cnt].cmd=argv[0];
-     back_cnt++;
-        // waitpid(-1, NULL, WNOHANG);
-         signal(SIGCHLD, handler);
-  } else {
-        waitpid(pid, &status, WUNTRACED);
-   // WUNTRACED: return if process has exited or process has stopped 
-  }
-  return ;
-    
+    return 1;
 }

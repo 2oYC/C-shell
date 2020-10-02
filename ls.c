@@ -1,4 +1,6 @@
 #include "shell.h"
+#define red    "\x1b[31m"
+#define res     "\x1b[0m"
 
 void abt_folder(char folder[],int lflag, int aflag){
 
@@ -11,7 +13,7 @@ void abt_folder(char folder[],int lflag, int aflag){
     }
     else
     {
-        printf("\n\n%s\n",folder);
+        printf(red "\n%s\n" res,folder);
         for(int i = 0 ; i<number_of_files ; i++)
         {
             char *path,  *name = list[i]->d_name; 

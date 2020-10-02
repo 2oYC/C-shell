@@ -1,2 +1,2 @@
 main:
-	gcc -g shell.h shell.c prompt.c read.c tokenize.c execute.c inblt_cd.c inblt_echo.c inblt_pwd.c pinfo.c ls.c sys.c bg_handler.c  
+	gcc -g shell.c prompt.c read.c tokenize.c execute_with_pipes.c parse_line.c sys.c execute_inblt.c exit_handler.c inblt_cd.c inblt_echo.c inblt_pwd.c pinfo.c ls.c jobs.c kjob.c overkill.c bg.c fg.c senv.c uenv.c
