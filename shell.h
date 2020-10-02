@@ -38,9 +38,11 @@ void bgg(char **argv, int argc);
 void uenv(char **argv, int argc);
 void senv(char **argv, int argc);
 void fgg(char **argv, int argc);
+void ctrlc(int sig);
 
 int flag,status;
 char prev[1300];
+int global;
 typedef struct bgp{
 	int proc_id;
 	char * cmd;

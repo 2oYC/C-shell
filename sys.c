@@ -54,6 +54,7 @@ int sys(char **argv, int argc, int input_fd, int output_fd) {
         }
          else { // Not a background process
             do {
+                global=pid;
                 wpid = waitpid(pid, &status, WUNTRACED);
             } while (!(WIFEXITED(status) || WIFSIGNALED(status)));
         }

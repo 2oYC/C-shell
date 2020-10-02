@@ -2,12 +2,14 @@
 
 int main(){
     status=1;
+    global=-1;
     strcpy(prev,"~");
     char **diffcomm,**incomm;
     getcwd(homedir,1023);
     back_cnt=0;
     bg_order_len = 0;
     signal(SIGCHLD, exit_handler);
+    signal(SIGINT,ctrlc);
     while(status){
         prompt();
         char *input=_read();
